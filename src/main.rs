@@ -22,7 +22,8 @@ async fn main() {
     pretty_env_logger::init();
     log::info!("Starting dialogue bot...");
 
-    let bot = Bot::from_env();
+    let token = std::env::var("TELOXIDE_TOKEN").expect("TELOXIDE_TOKEN must be set");
+    let bot = Bot::new(token);
 
     Dispatcher::builder(
         bot,
