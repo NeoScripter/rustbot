@@ -44,7 +44,7 @@ async fn main() {
 }
 
 async fn start(bot: Bot, dialogue: MyDialogue, msg: Message) -> HandlerResult {
-    bot.send_message(msg.chat.id, "Let's start! What's your full name?").await?;
+    bot.send_message(msg.chat.id, "Приветствую! Как вас зовут?").await?;
     dialogue.update(State::ReceiveFullName).await?;
     Ok(())
 }
@@ -52,11 +52,11 @@ async fn start(bot: Bot, dialogue: MyDialogue, msg: Message) -> HandlerResult {
 async fn receive_full_name(bot: Bot, dialogue: MyDialogue, msg: Message) -> HandlerResult {
     match msg.text() {
         Some(text) => {
-            bot.send_message(msg.chat.id, "How old are you?").await?;
+            bot.send_message(msg.chat.id, "Сколько вам лет?").await?;
             dialogue.update(State::ReceiveAge { full_name: text.into() }).await?;
         }
         None => {
-            bot.send_message(msg.chat.id, "Send me plain text.").await?;
+            bot.send_message(msg.chat.id, "Отправьте сообщение только в виде текста").await?;
         }
     }
 
@@ -71,11 +71,11 @@ async fn receive_age(
 ) -> HandlerResult {
     match msg.text().map(|text| text.parse::<u8>()) {
         Some(Ok(age)) => {
-            bot.send_message(msg.chat.id, "What's your location?").await?;
+            bot.send_message(msg.chat.id, "Где вы живете?").await?;
             dialogue.update(State::ReceiveLocation { full_name, age }).await?;
         }
         _ => {
-            bot.send_message(msg.chat.id, "Send me a number.").await?;
+            bot.send_message(msg.chat.id, "Введите число").await?;
         }
     }
 
@@ -90,12 +90,12 @@ async fn receive_location(
 ) -> HandlerResult {
     match msg.text() {
         Some(location) => {
-            let report = format!("Full name: {full_name}\nAge: {age}\nLocation: {location}");
+            let report = format!("Имя: {full_name}\nВозраст: {age}\nМестоположение: {location}");
             bot.send_message(msg.chat.id, report).await?;
             dialogue.exit().await?;
         }
         None => {
-            bot.send_message(msg.chat.id, "Send me plain text.").await?;
+            bot.send_message(msg.chat.id, "Отправьте сообщение только в виде текста").await?;
         }
     }
 
